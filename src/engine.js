@@ -1,5 +1,5 @@
 const fetch = require('node-fetch')
-
+const DB = require('../DB')
 
 const baseUrl = 'https://api-pub.bitfinex.com/v2/candles/trade'
 const timeFrame = '1m'
@@ -9,9 +9,8 @@ const limit = 1
 const usdAmount = 150
 const btcToSatoshi = 100000000
 
+const DB_Collection = 'BTC_at_timestamp'
 
-
-let DB = new Map()
 
 async function getData(timestamps, type = 'json') {
     let result = []
@@ -44,31 +43,31 @@ function validateRequest(req, res, next) {
 // Timestamp in milliseconds
 async function fetchBtcData(timestamp) {
     let result = null
-    if (DB.has(timestamp)) {
-        result = DB.get(timestamp)
+    // if (await DB.isDocAlreadyExists(DB_Collection, timestamp)) {
+    //     result = await DB.getDocument(DB_Collection, timestamp)
+    // }
+    // else {
+    result = {
+        timestamp: timestamp,
+        dateTime: null,
+        price: null,
+        error: null
     }
-    else {
-        result = {
-            timestamp: timestamp,
-            dateTime: null,
-            price: null,
-            error: null
-        }
-        let url = `${baseUrl}:${timeFrame}:${symbol}/hist?end=${timestamp}&limit=${limit}`
-        let response = await fetch(url);
-        let json = await response.json();
-        if (json.length > 0) {
-            if (json[0] === 'error') {
-                result.error = json[2]
-            } else {
-                result.price = json[0][2]
-                result.dateTime = new Date(json[0][0])
-                DB.set(timestamp, result)
-            }
+    let url = `${baseUrl}:${timeFrame}:${symbol}/hist?end=${timestamp}&limit=${limit}`
+    let response = await fetch(url);
+    let json = await response.json();
+    if (json.length > 0) {
+        if (json[0] === 'error') {
+            result.error = json[2]
         } else {
-            result.error = 'Could not get any data'
+            result.price = json[0][2]
+            result.dateTime = new Date(json[0][0]).toString()
+            // await DB.writeToCollection(DB_Collection, timestamp, result)
         }
+    } else {
+        result.error = 'Could not get any data'
     }
+    // }
     return result
 }
 
@@ -88,17 +87,23 @@ async function getDataTxt(timestamps) {
 async function getDataJson(timestamps) {
     let result = []
     for (stamp of timestamps) {
-        let fetchedData = await fetchBtcData(stamp)
-        if (fetchedData.error == null) {
-            let btcAmount = usdAmount / fetchedData.price
-            let satoshiAmount = btcAmount * btcToSatoshi
-            fetchedData.amountAtTime = {
-                usdAmount: usdAmount,
-                btcAmount: usdAmount / fetchedData.price,
-                satoshiAmount: satoshiAmount
-            }
+        if (await DB.isDocAlreadyExists(DB_Collection, stamp)) {
+            result.push(await DB.getDocument(DB_Collection, stamp))
         }
-        result.push(fetchedData)
+        else {
+            let fetchedData = await fetchBtcData(stamp)
+            if (fetchedData.error == null) {
+                let btcAmount = usdAmount / fetchedData.price
+                let satoshiAmount = btcAmount * btcToSatoshi
+                fetchedData.amountAtTime = {
+                    usdAmount: usdAmount,
+                    btcAmount: usdAmount / fetchedData.price,
+                    satoshiAmount: satoshiAmount
+                }
+                await DB.writeToCollection(DB_Collection, stamp, fetchedData)
+            }
+            result.push(fetchedData)
+        }
     }
     return result
 }
