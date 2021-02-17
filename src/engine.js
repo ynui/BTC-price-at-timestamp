@@ -13,6 +13,34 @@ const btcToSatoshi = 100000000
 
 let DB = new Map()
 
+async function getData(timestamps, type = 'json') {
+    let result = []
+    try {
+        switch (type) {
+            case 'json':
+                result = await getDataJson(timestamps)
+                break;
+            case 'text':
+                result = await getDataTxt(timestamps)
+                break;
+        }
+    } catch (error) {
+        throw error
+    }
+    return result
+}
+
+function validateRequest(req, res, next) {
+    let data = req.body
+    if (!Array.isArray(data))
+        return next(new Error('Data must be an array'))
+    for (value of data) {
+        if (Number.isNaN(parseInt(value)))
+            return next(new Error(`All data values must be numbers. Received: ${value}`))
+    }
+    return next()
+}
+
 // Timestamp in milliseconds
 async function fetchBtcData(timestamp) {
     let result = null
@@ -63,30 +91,6 @@ async function getDataJson(timestamps) {
     }
     console.log(result)
     return result
-}
-
-async function getData(timestamps, type = 'json') {
-    let result = []
-    switch (type) {
-        case 'json':
-            result = await getDataJson(timestamps)
-            break;
-        case 'text':
-            result = await getDataTxt(timestamps)
-            break;
-    }
-    return result
-}
-
-function validateRequest(req, res, next) {
-    let data = req.body
-    if (!Array.isArray(data))
-        return next(new Error('Data must be an array'))
-    for (value of data) {
-        if (Number.isNaN(parseInt(value)))
-            return next(new Error(`All data values must be numbers. Received: ${value}`))
-    }
-    return next()
 }
 
 module.exports = {
