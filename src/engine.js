@@ -76,7 +76,11 @@ async function getDataTxt(timestamps) {
     let result = []
     let jsonData = await getDataJson(timestamps)
     for (res of jsonData) {
-        result.push(`At ${res.dateTime}, BTC price was: ${res.price}$, ${res.amountAtTime.usdAmount}$ could get you ${res.amountAtTime.btcAmount} BTC, (or ${res.amountAtTime.satoshiAmount} Satoshis)`)
+        if (res.error == null) {
+            result.push(`At ${res.dateTime}, BTC price was: ${res.price}$, ${res.amountAtTime.usdAmount}$ could get you ${res.amountAtTime.btcAmount} BTC, (or ${res.amountAtTime.satoshiAmount} Satoshis)`)
+        } else {
+            result.push(`Could not get data for ${res.timestamp}`)
+        }
     }
     return result
 }
@@ -85,7 +89,7 @@ async function getDataJson(timestamps) {
     let result = []
     for (stamp of timestamps) {
         let fetchedData = await fetchBtcData(stamp)
-        if (fetchedData.price !== null) {
+        if (fetchedData.error == null) {
             let btcAmount = usdAmount / fetchedData.price
             let satoshiAmount = btcAmount * btcToSatoshi
             fetchedData.amountAtTime = {
@@ -96,7 +100,6 @@ async function getDataJson(timestamps) {
         }
         result.push(fetchedData)
     }
-    console.log(result)
     return result
 }
 
