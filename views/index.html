@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    #api {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td,
+    th {
+      border: 1px solid #bbb;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #ddd;
+    }
+
+    th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: gray;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>ZenGo Challange API server</h1>
+  <h3>URL:</h3>
+  <a href="http://ec2-18-216-71-220.us-east-2.compute.amazonaws.com:3000/">
+    http://ec2-18-16-71-220.us-east-2.compute.amazonaws.com:3000/</a>
+  <br>
+  <br>
+  <br>
+  <table id="api">
+    <tr>
+      <th>Route</th>
+      <th>Method</th>
+      <th>Path</th>
+      <th>Input</th>
+      <th>Response</th>
+    </tr>
+    <tr>
+      <td>
+        <h3>/</h3>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <!--Route-->
+      <td></td>
+      <!--Method-->
+      <td>GET</td>
+      <!--Path-->
+      <td>/</td>
+      <!--Input-->
+      <td>-</td>
+      <!--Response-->
+      <td>Redirect index.html</td>
+    </tr>
+    <tr>
+      <!--Route-->
+      <td></td>
+      <!--Method-->
+      <td>POST</td>
+      <!--Path-->
+      <td>/json</td>
+      <!--Input-->
+      <td>Array of timestamps (milliseconds)
+        <pre>
+[1609459200000, ...,]
+        </pre>
+      </td>
+      <!--Response-->
+      <td>
+        <pre>
+[
+  {
+    "timestamp": 1609459200000,
+    "dateTime": "2021-01-01T00:00:02.283Z",
+    "price": 28939.7434191,
+    "amountAtTime": {
+        "usdAmount": 150,
+        "btcAmount": 0.005183183479816245,
+        "satoshiAmount": 518318.3479816245
+    }
+  },
+  {...},
+]  
+        </pre>
+      </td>
+    </tr>
+    <tr>
+      <!--Route-->
+      <td></td>
+      <!--Method-->
+      <td>POST</td>
+      <!--Path-->
+      <td>/text</td>
+      <!--Input-->
+      <td>Array of timestamps (milliseconds)
+        <pre>
+[1609459200000, ...,]
+        </pre>
+      </td>
+      <!--Response-->
+      <td>
+        <pre>
+[
+  "At 2021-01-01T00:00:02.283Z,
+  BTC price was: 28939.7434191$,
+  150$ could get you 0.005183183479816245 BTC,
+  (or 518318.3479816245 Satoshis)",
+  "At...",
+]
+        </pre>
+      </td>
+    </tr>
+  </table>
+  <h3>All of the data is provided by bitfinex</h3>
+  <h3>Made by Yuval Niezni - ynui12@gmail.com</h3>
+</body>
+
+</html>
