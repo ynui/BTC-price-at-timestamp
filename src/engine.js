@@ -51,16 +51,23 @@ async function fetchBtcData(timestamp) {
         result = {
             timestamp: timestamp,
             dateTime: null,
-            price: null
+            price: null,
+            error: null
         }
         let url = `${baseUrl}:${timeFrame}:${symbol}/hist?end=${timestamp}&limit=${limit}`
         let response = await fetch(url);
         let json = await response.json();
         if (json.length > 0) {
-            result.price = json[0][2]
-            result.dateTime = new Date(json[0][0])
+            if (json[0] === 'error') {
+                result.error = json[2]
+            } else {
+                result.price = json[0][2]
+                result.dateTime = new Date(json[0][0])
+                DB.set(timestamp, result)
+            }
+        } else {
+            result.error = 'Could not get any data'
         }
-        DB.set(timestamp, result)
     }
     return result
 }
