@@ -2,7 +2,7 @@ const { firebase, admin } = require('./firebase/fbConfig');
 
 const db = admin.firestore()
 
-async function writeToCollection(collection, document, data) {
+async function writeDocument(collection, document, data) {
     let success = false
     try {
         await db.collection(collection).doc(document.toString()).set(data)
@@ -64,7 +64,7 @@ async function isDocAlreadyExists(collection, document) {
 }
 
 module.exports = {
-    writeToCollection,
+    writeDocument,
     updateDocument,
     getDocument,
     getCollection,

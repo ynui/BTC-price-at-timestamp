@@ -62,7 +62,7 @@ async function fetchBtcData(timestamp) {
         } else {
             result.price = json[0][2]
             result.dateTime = new Date(json[0][0]).toString()
-            // await DB.writeToCollection(DB_Collection, timestamp, result)
+            // await DB.writeDocument(DB_Collection, timestamp, result)
         }
     } else {
         result.error = 'Could not get any data'
@@ -100,7 +100,7 @@ async function getDataJson(timestamps) {
                     btcAmount: usdAmount / fetchedData.price,
                     satoshiAmount: satoshiAmount
                 }
-                await DB.writeToCollection(DB_Collection, stamp, fetchedData)
+                await DB.writeDocument(DB_Collection, stamp, fetchedData)
             }
             result.push(fetchedData)
         }
