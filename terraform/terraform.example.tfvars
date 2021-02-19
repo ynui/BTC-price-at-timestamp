@@ -1,0 +1,7 @@
+aws_access_key    = ""
+aws_secret_key    = ""
+aws_region        = ""
+aws_key_name      = ""
+aws_ami           = "ami-0996d3051b72b5b2c"
+aws_instance_type = "t2.micro"
+aws_instance_name = "BTC-api"
