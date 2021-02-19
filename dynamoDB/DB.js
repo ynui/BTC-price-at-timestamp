@@ -1,6 +1,7 @@
 const AWS = require("aws-sdk");
 const config = require('./config');
 
+
 AWS.config.update(config.config.aws_remote_config);
 
 const dynamodb = new AWS.DynamoDB();
