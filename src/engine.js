@@ -1,8 +1,9 @@
+const { json } = require('express')
 const fetch = require('node-fetch')
 const DB = require('../dynamoDB/DB')
 
 
-const DB_map = new Map()
+const dataMap = new Map()
 
 const DB_Collection = 'Timestamps'
 
@@ -26,6 +27,9 @@ async function getData(timestamps, type = 'json') {
                     break;
                 case 'text':
                     result.push(jsonDataToText(jsonData))
+                    break;
+                default:
+                    throw new Error(`Type: ${type} is undefined in the system`)
                     break;
             }
         }
@@ -108,14 +112,14 @@ async function getDataJson(timestamp) {
 async function GetDocFromDB(docName) {
     let result = null
     try {
-        if (DB_map.has(docName)) {
-            result = DB_map.get(docName)
+        if (dataMap.has(docName)) {
+            result = dataMap.get(docName)
         }
         else {
             let DB_result = await DB.getDocument(DB_Collection, stamp)
             if (DB_result !== null) {
                 result = DB_result
-                DB_map.set(docName, result)
+                dataMap.set(docName, result)
             }
         }
     } catch (error) {
