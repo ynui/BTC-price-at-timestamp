@@ -50,6 +50,7 @@ async function getDocument(tableName, id) {
     return result
 }
 
+
 module.exports = {
     putDocument,
     getDocument
