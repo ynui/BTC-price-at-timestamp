@@ -10,6 +10,7 @@ const usdAmount = 150
 const btcToSatoshi = 100000000
 
 const DB_Collection = 'BTC_at_timestamp'
+const DB_map = new Map()
 
 
 async function getData(timestamps, type = 'json') {
@@ -72,7 +73,7 @@ async function getDataTxt(timestamps) {
         if (res.error == null) {
             result.push(`At ${res.dateTime}, BTC price was: ${res.price}$, ${res.amountAtTime.usdAmount}$ could get you ${res.amountAtTime.btcAmount} BTC, (or ${res.amountAtTime.satoshiAmount} Satoshis)`)
         } else {
-            result.push(`Could not get data for ${res.timestamp}`)
+            result.push(`Error on: ${res.timestamp}, ${res.error}`)
         }
     }
     return result
@@ -81,7 +82,7 @@ async function getDataTxt(timestamps) {
 async function getDataJson(timestamps) {
     let result = []
     for (stamp of timestamps) {
-        let docFromDB = await DB.getDocument(DB_Collection, stamp)
+        let docFromDB = await GetDocFromDB(stamp)
         if (docFromDB !== null) {
             result.push(docFromDB)
         }
@@ -101,6 +102,24 @@ async function getDataJson(timestamps) {
         }
     }
     return result
+}
+
+async function GetDocFromDB(docName) {
+    let doc = null
+    try {
+        if (DB_map.has(docName)) {
+            doc = DB_map.get(docName)
+        }
+        else {
+            doc = await DB.getDocument(DB_Collection, stamp)
+            if (doc !== null) {
+                DB_map.set(docName, docFromDB)
+            }
+        }
+    } catch (error) {
+        throw error
+    }
+    return doc
 }
 
 module.exports = {
