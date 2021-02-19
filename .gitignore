@@ -5,3 +5,4 @@ dynamoDB/config.js
 terraform/.terraform*
 terraform/*tfstate*
 terraform/terraform.tfvars
+.vscode
