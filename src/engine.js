@@ -16,7 +16,7 @@ const btcToSatoshi = 100000000
 
 
 
-async function getData(timestamps, type = 'json') {
+exports.getData = async (timestamps, type = 'json')  => {
     let result = []
     try {
         for (stamp of timestamps) {
@@ -37,17 +37,6 @@ async function getData(timestamps, type = 'json') {
         throw error
     }
     return result
-}
-
-function validateRequest(req, res, next) {
-    let data = req.body
-    if (!Array.isArray(data))
-        return next(new Error('Data must be an array'))
-    for (value of data) {
-        if (Number.isNaN(parseInt(value)))
-            return next(new Error(`All data values must be numbers. Received: ${value}`))
-    }
-    return next()
 }
 
 // Timestamp in milliseconds
@@ -126,9 +115,4 @@ async function GetDocFromDB(docName) {
         throw error
     }
     return result
-}
-
-module.exports = {
-    getData,
-    validateRequest
 }
