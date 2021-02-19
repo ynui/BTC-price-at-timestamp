@@ -1,5 +1,7 @@
 node_modules
-firebase
+firebase/fbConfig.js
+firebase/serviceAccountKey.json
+dynamoDB/config.js
 terraform/.terraform*
-terraform/*.tfstate
+terraform/*tfstate*
 terraform/terraform.tfvars

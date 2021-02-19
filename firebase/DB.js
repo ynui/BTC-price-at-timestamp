@@ -1,8 +1,8 @@
-const { firebase, admin } = require('./firebase/fbConfig');
+const { firebase, admin } = require('./fbConfig');
 
 const db = admin.firestore()
 
-async function writeDocument(collection, document, data) {
+async function putDocument(collection, document, data) {
     let success = false
     try {
         await db.collection(collection).doc(document.toString()).set(data)
@@ -64,7 +64,7 @@ async function isDocAlreadyExists(collection, document) {
 }
 
 module.exports = {
-    writeDocument,
+    putDocument,
     updateDocument,
     getDocument,
     getCollection,
