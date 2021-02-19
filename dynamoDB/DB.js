@@ -1,13 +1,14 @@
 const AWS = require("aws-sdk");
 const config = require('./config');
+const utils = require('./utils');
 
 
-AWS.config.update(config.config.aws_remote_config);
+AWS.config.update(config.aws_remote_config);
 
 const dynamodb = new AWS.DynamoDB();
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-config.initTables(dynamodb)
+utils.initTables(dynamodb)
 
 async function putDocument(tableName, id, data) {
     let result = null
