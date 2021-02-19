@@ -14,7 +14,6 @@ router.get('/', (req, res, next) => {
 router.post('/json', middleware, async (req, res, next) => {
   try {
     let result = await engine.getData(req.body, 'json')
-    console.log(`Items: ${req.body.length}\nTime: ${end - start} ms`)
     res.send(result)
     res.end()
   } catch (error) {
@@ -25,7 +24,6 @@ router.post('/json', middleware, async (req, res, next) => {
 router.post('/text', middleware, async (req, res, next) => {
   try {
     let result = await engine.getData(req.body, 'text')
-    console.log(`Items: ${req.body.length}\nTime: ${end - start} ms`)
     res.send(result)
     res.end()
   } catch (error) {
