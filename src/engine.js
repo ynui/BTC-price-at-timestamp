@@ -1,21 +1,19 @@
 const fetch = require('node-fetch')
+
 const DB = require('../dynamoDB/DB')
-
-
 const dataMap = new Map()
 
-const DB_Collection = 'Timestamps'
+const {
+    DB_TABLE_NAME,
+    baseUrl,
+    timeFrame,
+    symbol,
+    limit,
+    usdAmount,
+    btcToSatoshi
+} = require('./settings')
 
-const baseUrl = 'https://api-pub.bitfinex.com/v2/candles/trade'
-const timeFrame = '1m'
-const symbol = 'tBTCUSD';
-const limit = 1
-const usdAmount = 150
-const btcToSatoshi = 100000000
-
-
-
-exports.getData = async (timestamps, type = 'json')  => {
+exports.getData = async (timestamps, type = 'json') => {
     let result = []
     try {
         for (stamp of timestamps) {
@@ -90,7 +88,7 @@ async function getDataJson(timestamp) {
                 btcAmount: usdAmount / fetchedData.price,
                 satoshiAmount: satoshiAmount
             }
-            await DB.putDocument(DB_Collection, stamp, fetchedData)
+            await DB.putDocument(DB_TABLE_NAME, stamp, fetchedData)
         }
         result = fetchedData
     }
@@ -104,7 +102,7 @@ async function GetDocFromDB(docName) {
             result = dataMap.get(docName)
         }
         else {
-            let DB_result = await DB.getDocument(DB_Collection, stamp)
+            let DB_result = await DB.getDocument(DB_TABLE_NAME, stamp)
             if (DB_result !== null) {
                 result = DB_result
                 dataMap.set(docName, result)
