@@ -15,20 +15,23 @@ const {
 
 exports.getData = async (timestamps, type = 'json') => {
     let result = []
+    let newData = null
     try {
         for (stamp of timestamps) {
             let jsonData = await getDataJson(stamp)
             switch (type) {
                 case 'json':
-                    result.push(jsonData)
+                    newData = jsonData
                     break;
                 case 'text':
-                    result.push(jsonDataToText(jsonData))
+                    newData = jsonDataToText(jsonData)
                     break;
                 default:
                     throw new Error(`Type: ${type} is undefined in the system`)
                     break;
             }
+            result.push(newData)
+            newData = null
         }
     } catch (error) {
         throw error
